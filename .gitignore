@@ -1,0 +1,6 @@
+.idea
+results
+.DS_Store
+build
+vendor
+node_modules
