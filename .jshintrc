@@ -18,8 +18,8 @@
   "plusplus":      false,  // true: Prohibit use of `++` & `--`
   "quotmark":      true,   // Quotation mark consistency
   "undef":         true,   // true: Require all non-global variables to be declared (prevents global leaks)
-  "unused":        true,   // true: Require all defined variables be used
-  "strict":        true,   // true: Requires all functions run in ES5 Strict Mode
+  "unused":        false,  // true: Require all defined variables be used
+  "strict":        false,  // true: Requires all functions run in ES5 Strict Mode
   "trailing":      true,   // true: Prohibit trailing whitespaces
   "maxparams":     false,  // {int} Max number of formal params allowed per function
   "maxdepth":      false,  // {int} Max depth of nested blocks (within functions)
@@ -78,6 +78,7 @@
   "globals": {
     "before" : true,
     "beforeEach" : true,
+    "inject" : true,
     "$log" : true,
     "_" : true,
     "after" : true,

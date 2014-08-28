@@ -144,7 +144,6 @@ module.exports = function (grunt) {
     changelog: {
       options: {
         dest: 'CHANGELOG.md',
-//        template: 'changelog.tpl'
         template:
           '# <%= version%> (<%= today%>) ' +
           '\n' +
@@ -395,7 +394,6 @@ module.exports = function (grunt) {
       ],
 
       options: {
-//        jshintrc: '.jshintrc',
         jshintrc: true,
         curly: true,
         immed: true,
