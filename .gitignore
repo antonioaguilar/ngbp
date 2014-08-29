@@ -1,6 +1,7 @@
 .idea
 results
 .DS_Store
+production
 build
 vendor
 node_modules
