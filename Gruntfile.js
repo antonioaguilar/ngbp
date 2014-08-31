@@ -19,6 +19,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-ngmin');
   grunt.loadNpmTasks('grunt-html2js');
   grunt.loadNpmTasks('grunt-conventional-changelog');
+  grunt.loadNpmTasks('grunt-spritesmith');
 
   /**
    * Load in our build configuration
@@ -451,6 +452,15 @@ module.exports = function (grunt) {
       }
     },
 
+    sprite:{
+      all: {
+        src: 'src/sprites/**/*.png',
+        destImg: 'src/assets/images/s.png',
+        destCSS: 'src/less/sprites.css'
+//        algorithm: 'alt-diagonal'
+      }
+    },
+
     /**
      * The `index` task compiles the `index.html` file as a Grunt template. CSS
      * and JS files co-exist here but they get split apart later.
@@ -622,20 +632,20 @@ module.exports = function (grunt) {
   /**
    * The default task is to build and compile.
    */
-  grunt.registerTask('default', [ 'build-test', 'compile' ]);
+  grunt.registerTask('default', [ 'build' ]);
   grunt.registerTask('production', [ 'build-test', 'compile' ]);
 
   /**
    * The `build` task gets your app ready to run for development and testing.
    */
   grunt.registerTask('build', [
-    'clean', 'html2js', 'jshint', 'less:build',
+    'clean', 'html2js', 'jshint', 'sprite:all', 'less:build',
     'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
     'copy:build_appjs', 'copy:build_vendorjs', 'index:build'
   ]);
 
   grunt.registerTask('build-test', [
-    'clean', 'html2js', 'jshint', 'less:build',
+    'clean', 'html2js', 'jshint', 'sprite:all', 'less:build',
     'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
     'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
     'karma:continuous'

@@ -1,0 +1,43 @@
+/*
+Icon classes can be used entirely standalone. They are named after their original file names.
+
+```html
+<i class="icon-home"></i>
+```
+*/
+.icon-fork {
+  background-image: url(../assets/images/s.png);
+  background-position: 0px 0px;
+  width: 32px;
+  height: 32px;
+}
+.icon-capsules {
+  background-image: url(../assets/images/s.png);
+  background-position: 0px -456px;
+  width: 640px;
+  height: 567px;
+}
+.icon-heartbeat {
+  background-image: url(../assets/images/s.png);
+  background-position: 0px -96px;
+  width: 640px;
+  height: 360px;
+}
+.icon-nurse {
+  background-image: url(../assets/images/s.png);
+  background-position: 0px -1023px;
+  width: 537px;
+  height: 640px;
+}
+.icon-github {
+  background-image: url(../assets/images/s.png);
+  background-position: 0px -32px;
+  width: 32px;
+  height: 32px;
+}
+.icon-twitter {
+  background-image: url(../assets/images/s.png);
+  background-position: 0px -64px;
+  width: 32px;
+  height: 32px;
+}

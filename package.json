@@ -32,6 +32,7 @@
     "grunt-recess": "^0.7.0",
     "karma": "^0.12.16",
     "karma-jasmine": "^0.1.5",
-    "karma-phantomjs-launcher": "^0.1.4"
+    "karma-phantomjs-launcher": "^0.1.4",
+    "grunt-spritesmith": "^2.1.1"
   }
 }
