@@ -5,39 +5,39 @@ Icon classes can be used entirely standalone. They are named after their origina
 <i class="icon-home"></i>
 ```
 */
-.icon-fork {
+.sprite-img-fork {
   background-image: url(../assets/images/s.png);
   background-position: 0px 0px;
   width: 32px;
   height: 32px;
 }
-.icon-capsules {
+.sprite-img-capsules {
   background-image: url(../assets/images/s.png);
-  background-position: 0px -456px;
+  background-position: 0px -464px;
   width: 640px;
   height: 567px;
 }
-.icon-heartbeat {
+.sprite-img-heartbeat {
   background-image: url(../assets/images/s.png);
-  background-position: 0px -96px;
+  background-position: 0px -102px;
   width: 640px;
   height: 360px;
 }
-.icon-nurse {
+.sprite-img-nurse {
   background-image: url(../assets/images/s.png);
-  background-position: 0px -1023px;
+  background-position: 0px -1033px;
   width: 537px;
   height: 640px;
 }
-.icon-github {
+.sprite-img-github {
   background-image: url(../assets/images/s.png);
-  background-position: 0px -32px;
+  background-position: 0px -34px;
   width: 32px;
   height: 32px;
 }
-.icon-twitter {
+.sprite-img-twitter {
   background-image: url(../assets/images/s.png);
-  background-position: 0px -64px;
+  background-position: 0px -68px;
   width: 32px;
   height: 32px;
 }
