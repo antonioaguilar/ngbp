@@ -3,6 +3,8 @@ ngbp - AngularJS Project Boilerplate
 
 Custom AngularJS project boilerplate based on the original [ngpb template](https://github.com/ngbp/ngbp) by [Josh D. Miller](https://github.com/joshdmiller). I have extended the template to include more features such as CSS sprites, S3 download/upload, Auto Reload, etc. 
 
+####Note: This template is work in progress, use it at your own risk!
+
 ##Quick Start
 ```
 $ git clone https://github.com/antonioaguilar/ngbp.git
@@ -11,7 +13,8 @@ $ bower install
 $ npm install
 ```
 
-### Development
+## Usage:
+#### In Development
 For rapid development and prototyping:
 ```
 $ grunt watch
@@ -22,7 +25,7 @@ $ grunt
 ```
 This will create a folder `./build`. Note: This does not run the karma unit tests by default.  
 
-### Production
+#### In Production
 To compile the project for production:
 ```
 $ grunt production
@@ -32,7 +35,7 @@ This will create a folder `./production`. This includes javascript, html and CSS
 
 ##Features
 * **AngularJS common plugins** : Customised for AngularJS including UI-Route, Cookies, UI-Bootstrap, etc. 
-* **Gruntfile build** : Custom Gruntfile for use in development (grunt watch) and production builds with included integrated Karma unit testing.
+* **Grunt build system** : Custom Gruntfile for use in development (grunt watch) and production builds with included integrated Karma unit testing.
 * **html2js** : Compile html partial templates into angularjs javascript templates (e.g. $templateCache), reduces server requests.
 * **CSS Sprites** : Generate CSS sprites from *.png files. 
 * **Auto Reload** : Embedded express server to enable auto reload functionality when using `grunt watch`.   
