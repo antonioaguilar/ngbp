@@ -1,7 +1,7 @@
 ngbp - AngularJS Project Boilerplate
 ====================================
 
-Custom AngularJS project boilerplate based on the original [ngpb template](https://github.com/ngbp/ngbp) by [Josh D. Miller](https://github.com/joshdmiller). 
+Custom AngularJS project boilerplate based on the original [ngpb template](https://github.com/ngbp/ngbp) by [Josh D. Miller](https://github.com/joshdmiller). I have extended the template to include more features such as CSS sprites, S3 download/upload, Auto Reload, etc. 
 
 ##Quick Start
 ```
