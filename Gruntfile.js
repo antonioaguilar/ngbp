@@ -452,6 +452,10 @@ module.exports = function (grunt) {
       }
     },
 
+    /**
+     * See documentation:
+     * https://github.com/Ensighten/grunt-spritesmith
+     */
     sprite:{
       all: {
         src: 'src/sprites/**/*.png',
@@ -459,15 +463,14 @@ module.exports = function (grunt) {
         destCSS: 'src/less/sprites.css',
 
         // OPTIONAL: Specify padding between images
-        'padding': 2,
+        padding: 2,
 
         // OPTIONAL: Specify css options
-        'cssOpts': {
+        cssOpts: {
           // Some templates allow for skipping of function declarations
-          'functions': false,
-
+          functions: false,
           // CSS template allows for overriding of CSS selectors
-          'cssClass': function (item) {
+          cssClass: function (item) {
             return '.sprite-img-' + item.name;
           }
         }
