@@ -1,4 +1,4 @@
-mvp - MVP Healthformics Analytics Platform
+ngbp - AngularJS Project Boilerplate
 ==========================================
 
 ## Usage:
@@ -20,16 +20,9 @@ $ grunt production
 ```
 This will create a folder `./production`. This includes javascript, html and CSS minification and runs the Karma unit tests.
 
-## Run the Express npm Server
-
-Run Chrome Browser with CORS disabled:
+## Run npm Serve with CORS disabled:
 ```
-$ open /Applications/Google\ Chrome.app --args --disable-web-security
+$ serve --port 9000 --cors 
 ```
 
-Start the Express Server
-```
-$ npm start
-```
-
-Copyright (c) [Healthformics Ltd](http://www.healthformics.com), 2014.
+Copyright &copy [Antonio Aguilar](http://www.antonio-aguilar.com), 2015.
