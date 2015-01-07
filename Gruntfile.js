@@ -19,7 +19,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-ngmin');
   grunt.loadNpmTasks('grunt-html2js');
   grunt.loadNpmTasks('grunt-conventional-changelog');
-  grunt.loadNpmTasks('grunt-spritesmith');
+  grunt.loadNpmTasks('grunt-contrib-htmlmin');
 
   /**
    * Load in our build configuration
@@ -82,11 +82,11 @@ module.exports = function (grunt) {
      */
     vendor_files: {
       js: [
-        'vendor/angular/angular.js',
-        'vendor/angular-ui-router/release/angular-ui-router.js',
-        'vendor/angular-cookies/angular-cookies.js',
+        'vendor/angular/angular.min.js',
+        'vendor/angular-ui-router/release/angular-ui-router.min.js',
+        'vendor/angular-cookies/angular-cookies.min.js',
         'vendor/angular-mocks/angular-mocks.js',
-        'vendor/angular-resource/angular-resource.js'
+        'vendor/angular-resource/angular-resource.min.js'
       ],
       css: [
       ],
@@ -133,6 +133,12 @@ module.exports = function (grunt) {
       },
       compile: {
         src: ['<%= compile_dir %>'],
+        options: {
+          force: true
+        }
+      },
+      tmp: {
+        src: ['tmp/'],
         options: {
           force: true
         }
@@ -281,8 +287,8 @@ module.exports = function (grunt) {
           banner: '<%= meta.banner %>'
         },
         src: [
-          '<%= vendor_files.js %>',
           '(function ( window, angular, undefined ) {', // module.prefix
+          '<%= vendor_files.js %>',
           '<%= build_dir %>/src/**/*.js',
           '<%= html2js.app.dest %>',
           '<%= html2js.common.dest %>',
@@ -314,9 +320,9 @@ module.exports = function (grunt) {
      */
     uglify: {
       compile: {
-        options: {
-          banner: '<%= meta.banner %>'
-        },
+        //options: {
+        //  banner: '<%= meta.banner %>'
+        //},
         files: {
           '<%= concat.compile_js.dest %>': '<%= concat.compile_js.dest %>'
         }
@@ -407,6 +413,41 @@ module.exports = function (grunt) {
       globals: {}
     },
 
+    htmlmin: {                                     // Task
+      templates: {                                  // Target
+        options: {                                 // Target options
+          removeComments: true,           // Strip HTML comments
+          removeCommentsFromCDATA: true,  // Strip HTML comments from scripts and styles
+          minifyJS: true,                // Minify JavaScript inside script tags
+          collapseWhitespace: true        // Remove white spaces
+        },
+
+        files: [
+          {
+            expand: true,     // Enable dynamic expansion.
+            //cwd: 'src/app/',      // Src matches are relative to this path.
+            //src: ['**/*.tpl.html'], // Actual pattern(s) to match.
+            src: ['src/app/**/*.tpl.html'], // Actual pattern(s) to match.
+            dest: 'tmp/'   // Destination path prefix.
+            //ext: '.min.html',   // Dest filepaths will have this extension.
+            //extDot: 'first'   // Extensions in filenames begin after the first dot
+          },
+        ]
+      },
+      min_index: {                                  // Target
+        options: {                                 // Target options
+          removeComments: true,           // Strip HTML comments
+          removeCommentsFromCDATA: true,  // Strip HTML comments from scripts and styles
+          minifyJS: true,                // Minify JavaScript inside script tags
+          collapseWhitespace: true        // Remove white spaces
+        },
+
+        files: {
+          '<%= compile_dir %>/index.html' : '<%= compile_dir %>/index.html'
+        }
+      }
+    },
+
     /**
      * HTML2JS is a Grunt plugin that takes all of your template files and
      * places them into JavaScript files as strings that are added to
@@ -417,11 +458,18 @@ module.exports = function (grunt) {
       /**
        * These are the templates from `src/app`.
        */
+      //app: {
+      //  options: {
+      //    base: 'src/app'
+      //  },
+      //  src: [ '<%= app_files.atpl %>' ],
+      //  dest: '<%= build_dir %>/templates-app.js'
+      //},
       app: {
         options: {
-          base: 'src/app'
+          base: 'tmp/src/app' // puts relative path for html templates
         },
-        src: [ '<%= app_files.atpl %>' ],
+        src: [ 'tmp/src/app/**/*.tpl.html' ], // minified html templates
         dest: '<%= build_dir %>/templates-app.js'
       },
       /**
@@ -449,31 +497,6 @@ module.exports = function (grunt) {
       },
       continuous: {
         singleRun: true
-      }
-    },
-
-    /**
-     * See documentation:
-     * https://github.com/Ensighten/grunt-spritesmith
-     */
-    sprite:{
-      all: {
-        src: 'src/sprites/**/*.png',
-        destImg: 'src/assets/images/s.png',
-        destCSS: 'src/less/sprites.css',
-
-        // OPTIONAL: Specify padding between images
-        padding: 2,
-
-        // OPTIONAL: Specify css options
-        cssOpts: {
-          // Some templates allow for skipping of function declarations
-          functions: false,
-          // CSS template allows for overriding of CSS selectors
-          cssClass: function (item) {
-            return '.sprite-img-' + item.name;
-          }
-        }
       }
     },
 
@@ -617,7 +640,8 @@ module.exports = function (grunt) {
           '<%= app_files.atpl %>',
           '<%= app_files.ctpl %>'
         ],
-        tasks: [ 'html2js:app', 'html2js:common' ]
+        //tasks: [ 'html2js:app', 'html2js:common' ]
+        tasks: [ 'clean:tmp', 'htmlmin:templates', 'html2js', 'clean:tmp' ]
       },
 
       /**
@@ -651,21 +675,28 @@ module.exports = function (grunt) {
   grunt.registerTask('default', [ 'build' ]);
   grunt.registerTask('production', [ 'build-test', 'compile' ]);
 
+
+  /**
+   *  task to minify and html2js the templates
+   *  Run this task just after the 'html2js' task */
+  grunt.registerTask('min-html-tpls', ['clean:tmp', 'htmlmin:templates', 'html2js', 'clean:tmp']);
+
   /**
    * The `build` task gets your app ready to run for development and testing.
    */
   grunt.registerTask('build', [
-    'clean', 'html2js', 'jshint', 'sprite:all', 'less:build',
+    'clean', 'min-html-tpls', 'jshint', 'less:build',
     'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
     'copy:build_appjs', 'copy:build_vendorjs', 'index:build'
   ]);
 
   grunt.registerTask('build-test', [
-    'clean', 'html2js', 'jshint', 'sprite:all', 'less:build',
+    'clean', 'min-html-tpls', 'jshint', 'less:build',
     'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
     'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
     'karma:continuous'
   ]);
+
 
   /**
    * The `compile` task gets your app ready for deployment by concatenating and
@@ -673,7 +704,7 @@ module.exports = function (grunt) {
    */
   grunt.registerTask('compile', [
     'clean:compile', 'less:compile', 'copy:compile_assets',
-    'ngmin', 'concat:compile_js', 'uglify', 'index:compile'
+    'ngmin', 'concat:compile_js', 'uglify', 'index:compile', 'htmlmin:min_index'
   ]);
 
   /**
