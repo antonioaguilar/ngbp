@@ -1,6 +1,12 @@
-.idea
 .DS_Store
-production
-build
-vendor
-node_modules
+.idea/
+.dpd/
+npm-debug.log
+tmp/
+build/
+public/
+data/
+production/
+vendor/
+node_modules/
+coverage/

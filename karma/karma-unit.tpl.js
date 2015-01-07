@@ -1,6 +1,7 @@
+/* jshint ignore:start */
 module.exports = function ( karma ) {
   karma.set({
-    /** 
+    /**
      * From where to look for files, starting with the location of this file.
      */
     basePath: '../',
@@ -9,21 +10,36 @@ module.exports = function ( karma ) {
      * This is the list of file patterns to load into the browser during testing.
      */
     files: [
-      <% scripts.forEach( function ( file ) { %>'<%= file %>',
-      <% }); %>
+      <% scripts.forEach( function ( file ) { %> '<%= file %>', <% }); %>
       'src/**/*.js'
     ],
     exclude: [
-      'src/assets/**/*.js'
+      'src/app/**/*.e2e.js', 'src/assets/**/*.js'
     ],
     frameworks: [ 'jasmine' ],
-    plugins: [ 'karma-jasmine', 'karma-phantomjs-launcher' ],
-    preprocessors: { },
+    plugins: [ 'karma-jasmine', 'karma-phantomjs-launcher' ], // 'karma-coverage'
+
+    preprocessors: {
+      // source files, that you wanna generate coverage for
+      // do not include tests or libraries
+      // (these files will be instrumented by Istanbul)
+      //'src/**/*.js': ['coverage']
+    },
+
+    // optionally, configure the reporter
+    //coverageReporter: {
+    //  type: 'html',
+    //  dir: 'coverage/'
+    //},
 
     /**
      * How to report, by default.
      */
-    reporters: 'dots',
+    colors: true,
+    // coverage reporter generates the coverage
+    reporters: ['dots'], //, 'coverage'],
+
+    //singleRun: false,
 
     /**
      * On which port should the browser connect, on which port is the test runner
@@ -33,7 +49,7 @@ module.exports = function ( karma ) {
     runnerPort: 9100,
     urlRoot: '/',
 
-    /** 
+    /**
      * Disable file watching by default.
      */
     autoWatch: false,
@@ -49,8 +65,10 @@ module.exports = function ( karma ) {
      * the aesthetic advantage of not launching a browser every time you save.
      */
     browsers: [
-      'PhantomJS'
-    ]
+    //'Firefox',
+    'PhantomJS'
+  ]
+
   });
 };
-
+/* jshint ignore:end */

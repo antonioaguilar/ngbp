@@ -20,6 +20,12 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-html2js');
   grunt.loadNpmTasks('grunt-conventional-changelog');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+
+  /**
+   * Load in our JavaScript Vendor Libraries
+   */
+  var vendorConfig = require('./vendor.config.js');
 
   /**
    * Load in our build configuration
@@ -30,7 +36,7 @@ module.exports = function (grunt) {
      * development and the `compile_dir` folder is where our app resides once it's
      * completely built.
      */
-    build_dir: 'build',
+    build_dir: 'public',
     compile_dir: 'production',
 
     /**
@@ -43,13 +49,14 @@ module.exports = function (grunt) {
      * app's unit tests.
      */
     app_files: {
-      js: [ 'src/**/*.js', '!src/**/*.spec.js', '!src/assets/**/*.js' ],
-      jsunit: [ 'src/**/*.spec.js' ],
+      js: ['src/**/*.js', '!src/**/*.spec.js', '!src/**/*.e2e.js', '!src/assets/**/*.js'],
+      jsunit: ['src/**/*.spec.js'],
+      e2e: ['src/**/*.e2e.js'],
 
-      atpl: [ 'src/app/**/*.tpl.html' ],
-      ctpl: [ 'src/common/**/*.tpl.html' ],
+      atpl: ['src/app/**/*.tpl.html'],
+      ctpl: ['src/common/**/*.tpl.html'],
 
-      html: [ 'src/index.html' ],
+      html: ['src/index.html'],
       less: 'src/less/main.less'
     },
 
@@ -62,39 +69,10 @@ module.exports = function (grunt) {
       ]
     },
 
-    /**
-     * This is the same as `app_files`, except it contains patterns that
-     * reference vendor code (`vendor/`) that we need to place into the build
-     * process somewhere. While the `app_files` property ensures all
-     * standardized files are collected for compilation, it is the user's job
-     * to ensure non-standardized (i.e. vendor-related) files are handled
-     * appropriately in `vendor_files.js`.
-     *
-     * The `vendor_files.js` property holds files to be automatically
-     * concatenated and minified with our project source files.
-     *
-     * The `vendor_files.css` property holds any CSS files to be automatically
-     * included in our app.
-     *
-     * The `vendor_files.assets` property holds any assets to be copied along
-     * with our app's assets. This structure is flattened, so it is not
-     * recommended that you use wildcards.
-     */
-    vendor_files: {
-      js: [
-        'vendor/angular/angular.min.js',
-        'vendor/angular-ui-router/release/angular-ui-router.min.js',
-        'vendor/angular-cookies/angular-cookies.min.js',
-        'vendor/angular-mocks/angular-mocks.js',
-        'vendor/angular-resource/angular-resource.min.js'
-      ],
-      css: [
-      ],
-      assets: [
-      ]
-    }
-  };
+    /** configure the JavaScript vendor files */
+    vendor_files: vendorConfig
 
+  };
 
   /**
    * This is the configuration object Grunt uses to give each plugin its
@@ -114,11 +92,11 @@ module.exports = function (grunt) {
      */
     meta: {
       banner: '/**\n' +
-        ' * <%= pkg.name %> v<%= pkg.version %> <%= grunt.template.today("dd-mm-yyyy") %>\n' +
-        ' * <%= pkg.homepage %>\n' +
-        ' *\n' +
-        ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
-        ' */\n'
+      ' * <%= pkg.name %> v<%= pkg.version %> <%= grunt.template.today("dd-mm-yyyy") %>\n' +
+      ' * <%= pkg.homepage %>\n' +
+      ' *\n' +
+      ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
+      ' */\n'
     },
 
     /**
@@ -126,7 +104,7 @@ module.exports = function (grunt) {
      */
     clean: {
       build: {
-        src: ['<%= build_dir %>'],
+        src: ['<%= build_dir %>', 'coverage/'],
         options: {
           force: true
         }
@@ -151,32 +129,31 @@ module.exports = function (grunt) {
     changelog: {
       options: {
         dest: 'CHANGELOG.md',
-        template:
-          '# <%= version%> (<%= today%>) ' +
-          '\n' +
-          '\n' +
-          '<% if (_(changelog.feat).size() > 0) { %> ## Features' +
-          '<% _(changelog.feat).forEach(function(changes, scope) { %>' +
-          '   - **<%= scope%>:**' +
-          '   <% changes.forEach(function(change) { %> - <%= change.msg%> (<%= helpers.commitLink(change.sha1) %>)' +
-          '   <% }); %>' +
-          '<% }); %> <% } %>' +
-          '\n' +
-          '\n' +
-          '<% if (_(changelog.fix).size() > 0) { %> ## Fixes' +
-          '<% _(changelog.fix).forEach(function(changes, scope) { %>' +
-          '   - **<%= scope%>:**' +
-          '   <% changes.forEach(function(change) { %> - <%= change.msg%> (<%= helpers.commitLink(change.sha1) %>)' +
-          '   <% }); %>' +
-          '<% }); %> <% } %>' +
-          '\n' +
-          '\n' +
-          '<% if (_(changelog.breaking).size() > 0) { %> ## Breaking Changes' +
-          '<% _(changelog.breaking).forEach(function(changes, scope) { %>' +
-          '   - **<%= scope%>:**' +
-          '   <% changes.forEach(function(change) { %> <%= change.msg%>' +
-          '   <% }); %>' +
-          '<% }); %> <% } %>'
+        template: '# <%= version%> (<%= today%>) ' +
+        '\n' +
+        '\n' +
+        '<% if (_(changelog.feat).size() > 0) { %> ## Features' +
+        '<% _(changelog.feat).forEach(function(changes, scope) { %>' +
+        '   - **<%= scope%>:**' +
+        '   <% changes.forEach(function(change) { %> - <%= change.msg%> (<%= helpers.commitLink(change.sha1) %>)' +
+        '   <% }); %>' +
+        '<% }); %> <% } %>' +
+        '\n' +
+        '\n' +
+        '<% if (_(changelog.fix).size() > 0) { %> ## Fixes' +
+        '<% _(changelog.fix).forEach(function(changes, scope) { %>' +
+        '   - **<%= scope%>:**' +
+        '   <% changes.forEach(function(change) { %> - <%= change.msg%> (<%= helpers.commitLink(change.sha1) %>)' +
+        '   <% }); %>' +
+        '<% }); %> <% } %>' +
+        '\n' +
+        '\n' +
+        '<% if (_(changelog.breaking).size() > 0) { %> ## Breaking Changes' +
+        '<% _(changelog.breaking).forEach(function(changes, scope) { %>' +
+        '   - **<%= scope%>:**' +
+        '   <% changes.forEach(function(change) { %> <%= change.msg%>' +
+        '   <% }); %>' +
+        '<% }); %> <% } %>'
       }
     },
 
@@ -205,14 +182,27 @@ module.exports = function (grunt) {
 
     /**
      * The `copy` task just copies files from A to B. We use it here to copy
-     * our project assets (images, fonts, etc.) and javascripts into
+     * our project assets (images, fonts, etc.) and Javascript files into
      * `build_dir`, and then to copy the assets to `compile_dir`.
      */
     copy: {
+
+      build_module_assets: {
+        files: [
+          {
+            src: ['src/app/**/assets/**/*.*'],
+            dest: '<%= build_dir %>/assets/',
+            cwd: '.',
+            expand: true,
+            flatten: true
+          }
+        ]
+      },
+
       build_app_assets: {
         files: [
           {
-            src: [ '**' ],
+            src: ['**'],
             dest: '<%= build_dir %>/assets/',
             cwd: 'src/assets',
             expand: true
@@ -222,7 +212,7 @@ module.exports = function (grunt) {
       build_vendor_assets: {
         files: [
           {
-            src: [ '<%= vendor_files.assets %>' ],
+            src: ['<%= vendor_files.assets %>'],
             dest: '<%= build_dir %>/assets/',
             cwd: '.',
             expand: true,
@@ -233,7 +223,7 @@ module.exports = function (grunt) {
       build_appjs: {
         files: [
           {
-            src: [ '<%= app_files.js %>' ],
+            src: ['<%= app_files.js %>'],
             dest: '<%= build_dir %>/',
             cwd: '.',
             expand: true
@@ -243,7 +233,7 @@ module.exports = function (grunt) {
       build_vendorjs: {
         files: [
           {
-            src: [ '<%= vendor_files.js %>' ],
+            src: ['<%= vendor_files.js %>'],
             dest: '<%= build_dir %>/',
             cwd: '.',
             expand: true
@@ -253,7 +243,7 @@ module.exports = function (grunt) {
       compile_assets: {
         files: [
           {
-            src: [ '**' ],
+            src: ['**'],
             dest: '<%= compile_dir %>/assets',
             cwd: '<%= build_dir %>/assets',
             expand: true
@@ -287,8 +277,10 @@ module.exports = function (grunt) {
           banner: '<%= meta.banner %>'
         },
         src: [
+          // wrap all javascript app code into a main function/closure
+          // to prevent polluting the global namespace
           '(function ( window, angular, undefined ) {', // module.prefix
-          '<%= vendor_files.js %>',
+          '<%= vendor_files.js %>', // this line was before the module prefix (app works ok with line inside prefix too)
           '<%= build_dir %>/src/**/*.js',
           '<%= html2js.app.dest %>',
           '<%= html2js.common.dest %>',
@@ -298,6 +290,8 @@ module.exports = function (grunt) {
       }
     },
 
+
+
     /**
      * `ng-min` annotates the sources before minifying. That is, it allows us
      * to code without the array syntax.
@@ -306,7 +300,7 @@ module.exports = function (grunt) {
       compile: {
         files: [
           {
-            src: [ '<%= app_files.js %>' ],
+            src: ['<%= app_files.js %>'],
             cwd: '<%= build_dir %>',
             dest: '<%= build_dir %>',
             expand: true
@@ -320,9 +314,6 @@ module.exports = function (grunt) {
      */
     uglify: {
       compile: {
-        //options: {
-        //  banner: '<%= meta.banner %>'
-        //},
         files: {
           '<%= concat.compile_js.dest %>': '<%= concat.compile_js.dest %>'
         }
@@ -342,7 +333,7 @@ module.exports = function (grunt) {
       },
       compile: {
         files: {
-          '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css': '<%= app_files.less %>'
+          '<%= compile_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css': '<%= app_files.less %>'
         },
         options: {
           cleancss: true,
@@ -358,7 +349,7 @@ module.exports = function (grunt) {
      */
     recess: {
       build: {
-        src: [ '<%= app_files.less %>' ],
+        src: ['<%= app_files.less %>'],
         dest: '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css',
         options: {
           compile: true,
@@ -369,8 +360,8 @@ module.exports = function (grunt) {
         }
       },
       compile: {
-        src: [ '<%= recess.build.dest %>' ],
-        dest: '<%= recess.build.dest %>',
+        src: ['<%= app_files.less %>'],
+        dest: '<%= compile_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css',
         options: {
           compile: true,
           compress: true,
@@ -413,35 +404,35 @@ module.exports = function (grunt) {
       globals: {}
     },
 
-    htmlmin: {                                     // Task
-      templates: {                                  // Target
-        options: {                                 // Target options
+    /**
+     * HTMLMIN is a Grunt plugin that takes all of your html template files and
+     * and minifies them by removing comments, white spaces, etc.
+     * This plugin is used in combination with the 'html2js' and it's called before
+     * to minimise the html before is put in the AngularJS templateCache.
+     */
+    htmlmin: {
+      templates: {                        // Selects all the *.tpl.html templates
+      options: {                          // Target options
           removeComments: true,           // Strip HTML comments
           removeCommentsFromCDATA: true,  // Strip HTML comments from scripts and styles
-          minifyJS: true,                // Minify JavaScript inside script tags
+          minifyJS: true,                 // Minify JavaScript inside script tags
           collapseWhitespace: true        // Remove white spaces
         },
-
         files: [
           {
-            expand: true,     // Enable dynamic expansion.
-            //cwd: 'src/app/',      // Src matches are relative to this path.
-            //src: ['**/*.tpl.html'], // Actual pattern(s) to match.
+            expand: true,                   // Enable dynamic expansion.
             src: ['src/app/**/*.tpl.html'], // Actual pattern(s) to match.
-            dest: 'tmp/'   // Destination path prefix.
-            //ext: '.min.html',   // Dest filepaths will have this extension.
-            //extDot: 'first'   // Extensions in filenames begin after the first dot
+            dest: 'tmp/'                    // Destination path prefix.
           },
         ]
       },
-      min_index: {                                  // Target
-        options: {                                 // Target options
-          removeComments: true,           // Strip HTML comments
-          removeCommentsFromCDATA: true,  // Strip HTML comments from scripts and styles
-          minifyJS: true,                // Minify JavaScript inside script tags
-          collapseWhitespace: true        // Remove white spaces
+      index2min: {                          // Selects only the main 'index.html' file
+        options: {                          // Target options
+          removeComments: true,             // Strip HTML comments
+          removeCommentsFromCDATA: true,    // Strip HTML comments from scripts and styles
+          minifyJS: true,                   // Minify JavaScript inside script tags
+          collapseWhitespace: true          // Remove white spaces
         },
-
         files: {
           '<%= compile_dir %>/index.html' : '<%= compile_dir %>/index.html'
         }
@@ -458,20 +449,14 @@ module.exports = function (grunt) {
       /**
        * These are the templates from `src/app`.
        */
-      //app: {
-      //  options: {
-      //    base: 'src/app'
-      //  },
-      //  src: [ '<%= app_files.atpl %>' ],
-      //  dest: '<%= build_dir %>/templates-app.js'
-      //},
       app: {
         options: {
-          base: 'tmp/src/app' // puts relative path for html templates
+          base: 'tmp/src/app'                     // puts the relative path for html templates
         },
-        src: [ 'tmp/src/app/**/*.tpl.html' ], // minified html templates
-        dest: '<%= build_dir %>/templates-app.js'
+        src: [ 'tmp/src/app/**/*.tpl.html' ],     // source path of the minified html templates
+        dest: '<%= build_dir %>/templates-app.js' // put the minified templates into the JavaScript file
       },
+
       /**
        * These are the templates from `src/common`.
        */
@@ -479,7 +464,7 @@ module.exports = function (grunt) {
         options: {
           base: 'src/common'
         },
-        src: [ '<%= app_files.ctpl %>' ],
+        src: ['<%= app_files.ctpl %>'],
         dest: '<%= build_dir %>/templates-common.js'
       }
     },
@@ -497,6 +482,21 @@ module.exports = function (grunt) {
       },
       continuous: {
         singleRun: true
+      }
+    },
+
+    /**
+     * The `cssmin` task minifies the main CSS file
+     */
+    cssmin: {
+      target: {
+        files: [{
+          expand: true,
+          cwd: '<%= build_dir %>/assets',
+          src: ['*.css', '!*.min.css'],
+          dest: '<%= compile_dir %>/assets'
+          //ext: '.min.css'
+        }]
       }
     },
 
@@ -519,7 +519,6 @@ module.exports = function (grunt) {
           '<%= build_dir %>/src/**/*.js',
           '<%= html2js.common.dest %>',
           '<%= html2js.app.dest %>',
-          '<%= vendor_files.css %>',
           '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
         ]
       },
@@ -532,7 +531,6 @@ module.exports = function (grunt) {
         dir: '<%= compile_dir %>',
         src: [
           '<%= concat.compile_js.dest %>',
-          '<%= vendor_files.css %>',
           '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
         ]
       }
@@ -542,16 +540,61 @@ module.exports = function (grunt) {
      * Configure Express server --port 9000
      */
     express: {
-      devServer: {
+      development: {
         options: {
           port: 9000,
-          hostname: 'localhost',
+          //hostname: 'localhost',
           serverreload: false,
-          bases: 'build',
+          bases: '<%= build_dir %>',
           livereload: true
+        }
+      },
+      production: {
+        options: {
+          port: 9000,
+          serverreload: false,
+          bases: '<%= compile_dir %>',
+          livereload: false
+        }
+      },
+      e2e: {
+        options: {
+          port: 9000,
+          serverreload: false,
+          bases: '<%= build_dir %>',
+          livereload: false
         }
       }
     },
+
+
+    protractor: {
+      options: {
+        // Location of your protractor config file
+        configFile: "ProtractorConf.js",
+
+        // Do you want the output to use fun colors?
+        noColor: true,
+
+        // Set to true if you would like to use the Protractor command line debugging tool
+        // debug: true,
+
+        // Additional arguments that are passed to the webdriver command
+        args: { }
+      },
+      e2e: {
+        options: {
+          // Stops Grunt process if a test fails
+          keepAlive: false
+        }
+      },
+      continuous: {
+        options: {
+          keepAlive: true
+        }
+      }
+    },
+
 
     /**
      * This task compiles the karma template so that changes to its file array
@@ -596,7 +639,7 @@ module.exports = function (grunt) {
        */
       gruntfile: {
         files: 'Gruntfile.js',
-        tasks: [ 'jshint:gruntfile' ],
+        tasks: ['jshint:gruntfile'],
         options: {
           livereload: false
         }
@@ -610,7 +653,8 @@ module.exports = function (grunt) {
         files: [
           '<%= app_files.js %>'
         ],
-        tasks: [ 'jshint:src', 'copy:build_appjs' ]
+        //tasks: [ 'jshint:src', 'copy:build_appjs' ]
+        tasks: ['copy:build_appjs']
       },
 
       /**
@@ -621,15 +665,15 @@ module.exports = function (grunt) {
         files: [
           'src/assets/**/*'
         ],
-        tasks: [ 'copy:build_app_assets', 'copy:build_vendor_assets' ]
+        tasks: ['copy:build_app_assets', 'copy:build_vendor_assets']
       },
 
       /**
        * When index.html changes, we need to compile it.
        */
       html: {
-        files: [ '<%= app_files.html %>' ],
-        tasks: [ 'index:build' ]
+        files: ['<%= app_files.html %>'],
+        tasks: ['index:build']
       },
 
       /**
@@ -648,10 +692,9 @@ module.exports = function (grunt) {
        * When the CSS files change, we need to compile and minify them.
        */
       less: {
-        files: [ 'src/**/*.less', 'src/**/*.css' ],
-        tasks: [ 'less:build' ]
+        files: ['src/**/*.less', 'src/**/*.css'],
+        tasks: ['less:build']
       }
-
     }
 
   };
@@ -667,45 +710,49 @@ module.exports = function (grunt) {
    */
 
   grunt.renameTask('watch', 'delta');
-  grunt.registerTask('watch', [ 'build', 'express', 'delta' ]);
+  grunt.registerTask('watch', ['build', 'express:development', 'delta']);
 
   /**
    * The default task is to build and compile.
    */
-  grunt.registerTask('default', [ 'build' ]);
-  grunt.registerTask('production', [ 'build-test', 'compile' ]);
-
+  grunt.registerTask('default', ['build']);
+  grunt.registerTask('development', ['build']);
+  grunt.registerTask('production', ['test', 'compile']);
+  grunt.registerTask('test:development', ['express:e2e', 'express-keepalive']);
+  grunt.registerTask('test:production', ['express:production', 'express-keepalive']);
+  grunt.renameTask('test:development', 'test:dev');
+  grunt.renameTask('test:production', 'test:prod');
 
   /**
-   *  task to minify and html2js the templates
-   *  Run this task just after the 'html2js' task */
-  grunt.registerTask('min-html-tpls', ['clean:tmp', 'htmlmin:templates', 'html2js', 'clean:tmp']);
+   * The `html2min` task minifies all the html templates and applies the 'html2js' task
+   */
+  grunt.registerTask('html2min', ['clean:tmp', 'htmlmin:templates', 'html2js', 'clean:tmp']);
 
   /**
    * The `build` task gets your app ready to run for development and testing.
    */
   grunt.registerTask('build', [
-    'clean', 'min-html-tpls', 'jshint', 'less:build',
-    'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
+    'clean', 'html2min', 'jshint', 'less:build', 'concat:build_css',
+    'copy:build_app_assets', 'copy:build_module_assets', 'copy:build_vendor_assets',
     'copy:build_appjs', 'copy:build_vendorjs', 'index:build'
   ]);
 
-  grunt.registerTask('build-test', [
-    'clean', 'min-html-tpls', 'jshint', 'less:build',
-    'concat:build_css', 'copy:build_app_assets', 'copy:build_vendor_assets',
-    'copy:build_appjs', 'copy:build_vendorjs', 'index:build', 'karmaconfig',
-    'karma:continuous'
+  grunt.registerTask('test', [
+    'clean', 'html2min', 'jshint', 'less:build', 'concat:build_css',
+    'copy:build_app_assets', 'copy:build_module_assets', 'copy:build_vendor_assets',
+    'copy:build_appjs', 'copy:build_vendorjs', 'index:build',
+    'karmaconfig', 'karma:continuous'
   ]);
-
 
   /**
    * The `compile` task gets your app ready for deployment by concatenating and
    * minifying your code.
    */
-  grunt.registerTask('compile', [
-    'clean:compile', 'less:compile', 'copy:compile_assets',
-    'ngmin', 'concat:compile_js', 'uglify', 'index:compile', 'htmlmin:min_index'
-  ]);
+    grunt.registerTask('compile', [
+      'clean:compile', 'less:compile', 'copy:compile_assets',
+      'ngmin', 'concat:compile_js', 'uglify', 'index:compile', 'htmlmin:index2min'
+    ]);
+
 
   /**
    * A utility function to get all app JavaScript sources.
