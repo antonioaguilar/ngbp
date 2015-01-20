@@ -16,11 +16,12 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-recess');
   grunt.loadNpmTasks('grunt-bump');
   grunt.loadNpmTasks('grunt-karma');
-  grunt.loadNpmTasks('grunt-ngmin');
+  grunt.loadNpmTasks('grunt-ng-annotate');
   grunt.loadNpmTasks('grunt-html2js');
   grunt.loadNpmTasks('grunt-conventional-changelog');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-uncss');
 
   /**
    * Load in our JavaScript Vendor Libraries
@@ -36,7 +37,7 @@ module.exports = function (grunt) {
      * development and the `compile_dir` folder is where our app resides once it's
      * completely built.
      */
-    build_dir: 'public',
+    build_dir: 'public', // was 'build'
     compile_dir: 'production',
 
     /**
@@ -69,7 +70,7 @@ module.exports = function (grunt) {
       ]
     },
 
-    /** configure the JavaScript vendor files */
+    /* configure the JavaScript vendor files */
     vendor_files: vendorConfig
 
   };
@@ -104,7 +105,7 @@ module.exports = function (grunt) {
      */
     clean: {
       build: {
-        src: ['<%= build_dir %>', 'coverage/'],
+        src: ['<%= build_dir %>', 'coverage/', 'backend/public/*'],
         options: {
           force: true
         }
@@ -187,10 +188,19 @@ module.exports = function (grunt) {
      */
     copy: {
 
+      /** copy _public source files to backend folder */
+      backend: {
+        expand: true,
+        cwd: 'public/',
+        src: '**',
+        dest: 'backend/public'
+      },
+
       build_module_assets: {
         files: [
           {
-            src: ['src/app/**/assets/**/*.*'],
+            src: ['src/app/**/assets/**/*.*'], // 'src/app/**/*.svg'
+            //dest: '<%= build_dir %>/module_assets/',
             dest: '<%= build_dir %>/assets/',
             cwd: '.',
             expand: true,
@@ -290,13 +300,11 @@ module.exports = function (grunt) {
       }
     },
 
-
-
     /**
-     * `ng-min` annotates the sources before minifying. That is, it allows us
+     * `ngAnnotate` annotates the sources before minifying. That is, it allows us
      * to code without the array syntax.
      */
-    ngmin: {
+    ngAnnotate: {
       compile: {
         files: [
           {
@@ -314,6 +322,10 @@ module.exports = function (grunt) {
      */
     uglify: {
       compile: {
+        //uncomment this to enable the banner in the minified JavaScript file
+        //options: {
+        //  banner: '<%= meta.banner %>'
+        //},
         files: {
           '<%= concat.compile_js.dest %>': '<%= concat.compile_js.dest %>'
         }
@@ -360,6 +372,8 @@ module.exports = function (grunt) {
         }
       },
       compile: {
+        //src: ['<%= recess.build.dest %>'],
+        //dest: '<%= recess.build.dest %>',
         src: ['<%= app_files.less %>'],
         dest: '<%= compile_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css',
         options: {
@@ -412,7 +426,7 @@ module.exports = function (grunt) {
      */
     htmlmin: {
       templates: {                        // Selects all the *.tpl.html templates
-      options: {                          // Target options
+        options: {                          // Target options
           removeComments: true,           // Strip HTML comments
           removeCommentsFromCDATA: true,  // Strip HTML comments from scripts and styles
           minifyJS: true,                 // Minify JavaScript inside script tags
@@ -449,6 +463,15 @@ module.exports = function (grunt) {
       /**
        * These are the templates from `src/app`.
        */
+
+      /* app: {
+       options: {
+       base: 'src/app'
+       },
+       src: ['<%= app_files.atpl %>'],
+       dest: '<%= build_dir %>/templates-app.js'
+       },*/
+
       app: {
         options: {
           base: 'tmp/src/app'                     // puts the relative path for html templates
@@ -486,6 +509,22 @@ module.exports = function (grunt) {
     },
 
     /**
+     * The `uncss` task compiles removed the unused CSS rules from the project CSS stylesheets
+     */
+    uncss: {
+      dist: {
+        src: ['<%= build_dir %>/index.html', 'src/app/**/*.tpl.html'], //// this RULE WORKS
+        dest: '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css',
+
+        options: {
+          ignore       : ['hover', 'click'],
+          ignoreSheets : [/fonts.googleapis/],
+          report: 'min' //// optional: include to report savings
+        }
+      }
+    },
+
+    /**
      * The `cssmin` task minifies the main CSS file
      */
     cssmin: {
@@ -519,6 +558,7 @@ module.exports = function (grunt) {
           '<%= build_dir %>/src/**/*.js',
           '<%= html2js.common.dest %>',
           '<%= html2js.app.dest %>',
+          //'<%= vendor_files.css %>',
           '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
         ]
       },
@@ -531,6 +571,7 @@ module.exports = function (grunt) {
         dir: '<%= compile_dir %>',
         src: [
           '<%= concat.compile_js.dest %>',
+          //'<%= vendor_files.css %>',
           '<%= build_dir %>/assets/<%= pkg.name %>-<%= pkg.version %>.css'
         ]
       }
@@ -685,7 +726,8 @@ module.exports = function (grunt) {
           '<%= app_files.ctpl %>'
         ],
         //tasks: [ 'html2js:app', 'html2js:common' ]
-        tasks: [ 'clean:tmp', 'htmlmin:templates', 'html2js', 'clean:tmp' ]
+        //tasks: [ 'clean:tmp', 'htmlmin:templates', 'html2js', 'clean:tmp' ]
+        tasks: [ 'clean:tmp', 'htmlmin:templates', 'html2js' ]
       },
 
       /**
@@ -748,11 +790,10 @@ module.exports = function (grunt) {
    * The `compile` task gets your app ready for deployment by concatenating and
    * minifying your code.
    */
-    grunt.registerTask('compile', [
-      'clean:compile', 'less:compile', 'copy:compile_assets',
-      'ngmin', 'concat:compile_js', 'uglify', 'index:compile', 'htmlmin:index2min'
-    ]);
-
+  grunt.registerTask('compile', [
+    'clean:compile', 'less:compile', 'copy:compile_assets',
+    'ngAnnotate', 'concat:compile_js', 'uglify', 'index:compile', 'htmlmin:index2min'
+  ]);
 
   /**
    * A utility function to get all app JavaScript sources.

@@ -34,7 +34,7 @@ module.exports = {
       'vendor/underscore/underscore-min.js'
     ],
     css: [
-      'src/less/style.css'
+      //'src/less/style.css'
     ],
     assets: []
 };

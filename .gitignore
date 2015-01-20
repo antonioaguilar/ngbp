@@ -10,3 +10,4 @@ production/
 vendor/
 node_modules/
 coverage/
+backend/
