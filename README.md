@@ -1,5 +1,17 @@
 ngbp - AngularJS Project Boilerplate
 ==========================================
+## Installation
+
+To install the project template, run the following commands:
+
+```
+$ npm install
+````
+
+````
+$ bower install
+````
+
 
 ## Usage:
 #### In Development
@@ -7,6 +19,8 @@ For rapid development and prototyping:
 ```
 $ grunt watch
 ```
+then, open your browser on `http://localhost:9000/`. 
+
 To make a full project build:
 ```
 $ grunt
