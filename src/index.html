@@ -12,8 +12,10 @@
   <% }); %>
   <title ng-bind="pageTitle"></title>
 </head>
-<body ui-view>
+<body>
   <!--app code here-->
+
+  <div class="container-fluid" ui-view></div>
 
   <!-- compiled JavaScript -->
   <% scripts.forEach( function ( file ) { %>

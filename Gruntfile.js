@@ -58,7 +58,7 @@ module.exports = function (grunt) {
       ctpl: ['src/common/**/*.tpl.html'],
 
       html: ['src/index.html'],
-      less: 'src/less/main.less'
+      less: 'src/styles/main.less'
     },
 
     /**
@@ -757,10 +757,6 @@ module.exports = function (grunt) {
   grunt.registerTask('default', ['build']);
   grunt.registerTask('development', ['build']);
   grunt.registerTask('production', ['test', 'compile']);
-  grunt.registerTask('test:development', ['express:e2e', 'express-keepalive']);
-  grunt.registerTask('test:production', ['express:production', 'express-keepalive']);
-  grunt.renameTask('test:development', 'test:dev');
-  grunt.renameTask('test:production', 'test:prod');
 
   /**
    * The `html2min` task minifies all the html templates and applies the 'html2js' task
@@ -779,8 +775,9 @@ module.exports = function (grunt) {
   grunt.registerTask('test', [
     'clean', 'html2min', 'less:build', 'concat:build_css',
     'copy:build_app_assets', 'copy:build_module_assets', 'copy:build_vendor_assets',
-    'copy:build_appjs', 'copy:build_vendorjs', 'index:build',
-    'karmaconfig', 'karma:continuous'
+    'copy:build_appjs', 'copy:build_vendorjs',
+    'index:build'
+    //'karmaconfig', 'karma:continuous'
   ]);
 
   /**
