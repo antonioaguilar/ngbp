@@ -694,7 +694,6 @@ module.exports = function (grunt) {
         files: [
           '<%= app_files.js %>'
         ],
-        //tasks: [ 'jshint:src', 'copy:build_appjs' ]
         tasks: ['copy:build_appjs']
       },
 
@@ -725,8 +724,6 @@ module.exports = function (grunt) {
           '<%= app_files.atpl %>',
           '<%= app_files.ctpl %>'
         ],
-        //tasks: [ 'html2js:app', 'html2js:common' ]
-        //tasks: [ 'clean:tmp', 'htmlmin:templates', 'html2js', 'clean:tmp' ]
         tasks: [ 'clean:tmp', 'htmlmin:templates', 'html2js' ]
       },
 
@@ -774,13 +771,13 @@ module.exports = function (grunt) {
    * The `build` task gets your app ready to run for development and testing.
    */
   grunt.registerTask('build', [
-    'clean', 'html2min', 'jshint', 'less:build', 'concat:build_css',
+    'clean', 'html2min', 'less:build', 'concat:build_css',
     'copy:build_app_assets', 'copy:build_module_assets', 'copy:build_vendor_assets',
     'copy:build_appjs', 'copy:build_vendorjs', 'index:build'
   ]);
 
   grunt.registerTask('test', [
-    'clean', 'html2min', 'jshint', 'less:build', 'concat:build_css',
+    'clean', 'html2min', 'less:build', 'concat:build_css',
     'copy:build_app_assets', 'copy:build_module_assets', 'copy:build_vendor_assets',
     'copy:build_appjs', 'copy:build_vendorjs', 'index:build',
     'karmaconfig', 'karma:continuous'

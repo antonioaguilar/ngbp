@@ -31,6 +31,8 @@ module.exports = {
       'vendor/angular-mocks/angular-mocks.js',
       'vendor/angular-resource/angular-resource.min.js',
 
+      'vendor/Faker/build/build/faker.min.js',
+
       'vendor/underscore/underscore-min.js'
     ],
     css: [
