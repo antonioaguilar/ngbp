@@ -1,13 +1,9 @@
 .DS_Store
 .idea/
-.dpd/
 npm-debug.log
 tmp/
-build/
-public/
-data/
-production/
+_public/
+_production/
 vendor/
 node_modules/
-coverage/
-backend/
+reports/

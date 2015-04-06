@@ -5,18 +5,19 @@
 angular.module('ngbp', [
 
   // html templates
-  'templates-app', 'templates-common',
+  'app.templates',
 
   // vendor dependencies
-  'ui.router', 'ngResource', 'ngCookies',
+  'ui.router',
+  'ngResource',
+  'ngCookies',
 
-  // modules, controllers and services
-  'HomeCtrl'
+  // Default page
+  'app.home'
+
 ])
 
-.config(function myAppConfig ($locationProvider, $httpProvider, $sceDelegateProvider, $logProvider, $urlRouterProvider) {
-
-  $logProvider.debugEnabled(true);
+.config(function myAppConfig ($urlRouterProvider) {
 
   $urlRouterProvider.otherwise('/home');
 
@@ -27,16 +28,12 @@ angular.module('ngbp', [
 
 })
 
-.controller('AppCtrl', function AppCtrl ($scope, $rootScope, $state, $log, $location, $cookieStore, $window) {
-
-  $log.debug('AppCtrl() loaded on ' + new Date());
+.controller('AppCtrl', function AppCtrl ($scope) {
 
   $scope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
-
     if (angular.isDefined(toState.data.pageTitle)) {
-      $scope.pageTitle = toState.data.pageTitle + ' | ngbp template';
+      $scope.pageTitle = toState.data.pageTitle + ' | Website Title';
     }
-
   });
 
 });
