@@ -1,42 +1,30 @@
-ngbp - AngularJS Project Boilerplate
+ngbp - AngularJS Project Template
 ==========================================
+
 ## Installation
+
+Install the CLI tools:
+
+* ```npm install -g grunt-cli bower karma protractor```
 
 To install the project template, run the following commands:
 
-```
-$ npm install
-````
-
-````
-$ bower install
-````
+* Install NPM modules: ```npm install```
+* Install Bower components: ```bower install```
 
 
-## Usage:
-#### In Development
-For rapid development and prototyping:
-```
-$ grunt watch
-```
-then, open your browser on `http://localhost:9000/`. 
+## Usage
 
-To make a full project build:
-```
-$ grunt
-```
-This will create a folder `./build`. Note: This does not run the karma unit tests by default.
+### Development Mode
 
-#### In Production
-To compile the project for production:
-```
-$ grunt production
-```
-This will create a folder `./production`. This includes javascript, html and CSS minification and runs the Karma unit tests.
+* For rapid development and prototyping: ```grunt watch```. This creates a folder `_build`.
+* then, open your browser on `http://localhost:9000/`
 
-## Run npm Serve with CORS disabled:
-```
-$ serve --port 9000 --cors 
-```
+### Production Mode
+* To compile the project for production: ```grunt production```.
+* This creates a folder `_production` with all the javascript, html and CSS minified.
+* Karma unit tests are run.
 
-Copyright &copy [Antonio Aguilar](http://www.antonio-aguilar.com), 2015.
+
+#### Acknowledgements
+*This project template is adapted from [ngbp](http://joshdmiller.github.com/ng-boilerplate) and extended by [Antonio Aguilar](http://www.antonio-aguilar.com), 2015.*
