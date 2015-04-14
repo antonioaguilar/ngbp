@@ -1,5 +1,4 @@
-ngbp - AngularJS Project Template
-==========================================
+# ngbp - AngularJS Project Template [![Build Status](https://travis-ci.org/antonioaguilar/ngbp.svg?branch=master)](https://travis-ci.org/antonioaguilar/ngbp)
 
 ## Installation
 
@@ -27,4 +26,4 @@ To install the project template, run the following commands:
 
 
 #### Acknowledgements
-*This project template is adapted from [ngbp](http://joshdmiller.github.com/ng-boilerplate) and extended by [Antonio Aguilar](http://www.antonio-aguilar.com), 2015.*
+This project template is adapted from [ngbp](http://joshdmiller.github.com/ng-boilerplate) and extended by [Antonio Aguilar](http://www.antonio-aguilar.com), 2015.

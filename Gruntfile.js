@@ -47,8 +47,6 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-eslint');
   grunt.loadNpmTasks('grunt-sass');
 
-  //grunt.loadNpmTasks('grunt-browser-sync');
-
   /*
    * Load in our JavaScript Libraries
    */
@@ -327,24 +325,28 @@ module.exports = function (grunt) {
      * point (!); this is useful when code comes from a third party but is
      * nonetheless inside `src/`.
      */
-    //jshint: {
-    //
-    //  /* include JSHint code rules */
-    //  options: grunt.file.readJSON('.jshintrc'),
-    //
-    //  src: {
-    //    src: '<%= app_files.js %>'
-    //  },
-    //  test: {
-    //    src: '<%= app_files.jsunit %>'
-    //  },
-    //  e2e: {
-    //    src: '<%= app_files.e2e %>'
-    //  },
-    //  gruntfile: {
-    //    src: 'Gruntfile.js'
-    //  }
-    //},
+/*
+
+    jshint: {
+
+      /!* include JSHint code rules *!/
+      options: grunt.file.readJSON('.jshintrc'),
+
+      src: {
+        src: '<%= app_files.js %>'
+      },
+      test: {
+        src: '<%= app_files.jsunit %>'
+      },
+      e2e: {
+        src: '<%= app_files.e2e %>'
+      },
+      gruntfile: {
+        src: 'Gruntfile.js'
+      }
+    },
+
+*/
 
 
     /*
@@ -355,7 +357,7 @@ module.exports = function (grunt) {
      */
     htmlmin: {
 
-      index: {                          // Selects only the main 'index.html' file
+      index: {                              // Selects only the main 'index.html' file
         options: {                          // Target options
           removeComments: true,             // Strip HTML comments
           removeCommentsFromCDATA: true,    // Strip HTML comments from scripts and styles
