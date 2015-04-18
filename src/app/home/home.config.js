@@ -1,21 +1,21 @@
 /**
- * This is the default 'home' module/controller
+ * This is the default 'home' module
  */
 
 angular.module('app.home', [
-	'ngResource',
+  'ngResource',
   'ngCookies',
   'ui.router'
 ])
 
-.config(function config ($stateProvider) {
+.config(function config($stateProvider) {
 
-	$stateProvider.state('home', {
-		url  : '/home',
+  $stateProvider.state('home', {
+    url: '/home',
     templateUrl: 'home/partials/home.tpl.html',
-		data : {
+    data: {
       pageTitle: 'Home Page'
     }
-	});
+  });
 
 });
